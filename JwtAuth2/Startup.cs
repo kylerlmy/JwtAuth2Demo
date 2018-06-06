@@ -23,6 +23,16 @@ namespace JwtAuth2 {
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices (IServiceCollection services) {
 
+            //增加跨域访问
+            services.AddCors (options => {
+                options.AddPolicy ("CorsPolicy",
+                    builder => builder.AllowAnyOrigin ()
+                    .AllowAnyMethod ()
+                    .AllowAnyHeader ()
+                    .AllowCredentials ()
+                    .Build ());
+            });
+
             services.AddAuthentication (JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer (options => {
                     options.TokenValidationParameters = new TokenValidationParameters {
@@ -45,7 +55,7 @@ namespace JwtAuth2 {
                 app.UseDeveloperExceptionPage ();
             }
             app.UseAuthentication ();
-
+            app.UseCors ("CorsPolicy");//增加跨域访问
             app.UseMvc ();
         }
     }
